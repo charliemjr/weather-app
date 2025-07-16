@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherSphere</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="apple-touch-icon.png">
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+    </div>
+    
+    <button id="back-to-top" title="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cloud-sun"></i>
+                <h1>WeatherSphere</h1>
+            </div>
+            
+            <div class="controls">
+                <div class="control-btn" id="lang-container">
+                    <i class="fas fa-globe"></i>
+                    <div class="lang-options">
+                        <span class="lang-option active" data-lang="en">EN</span>
+                        <span class="lang-option" data-lang="es">ES</span>
+                    </div>
+                </div>
+                
+                <button class="control-btn" id="favorites-toggle">
+                    <i class="fas fa-star"></i> <span id="favorites-text">Favorites</span>
+                </button>
+                
+                <div class="theme-toggle" id="theme-toggle"></div>
+            </div>
+        </header>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="location-input" placeholder="Enter a city name or use voice search">
+                <button class="voice-search" id="voice-search">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="search-btn" id="search-btn">
+                    <i class="fas fa-search"></i> <span id="search-text">Search</span>
+                </button>
+            </div>
+            
+            <div class="favorites-container" id="favorites-container">
+                <div class="favorite-city" data-city="New York">
+                    <i class="fas fa-star"></i> New York
+                </div>
+                <div class="favorite-city" data-city="Glen Cove">
+                    <i class="fas fa-star"></i> Glen Cove
+                </div>
+                <div class="favorite-city" data-city="Port Washington">
+                    <i class="fas fa-star"></i> Port Washington
+                </div>
+                <div class="favorite-city" data-city="Floral Park">
+                    <i class="fas fa-star"></i> Floral Park
+                </div>
+                <div class="favorite-city" data-city="Levittown">
+                    <i class="fas fa-star"></i> Levittown
+                </div>
+                <div class="favorite-city" data-city="Valley Stream">
+                    <i class="fas fa-star"></i> Valley Stream
+                </div>
+            </div>
+        </div>
+        
+        <div class="error-message" id="error-message">
+            <i class="fas fa-exclamation-circle"></i> 
+            <span id="error-text">City not found. Please try again.</span>
+        </div>
+        
+        <div class="main-content">
+            <div class="current-weather">
+                <div class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h2 id="city-name">Detecting your location...</h2>
+                </div>
+                
+                <div class="date" id="current-date">Thursday, July 17, 2025</div>
+                
+                <div class="weather-main">
+                    <div class="weather-icon">
+                        <i class="fas fa-sun" id="weather-icon"></i>
+                    </div>
+                    <div>
+                        <div class="temperature" id="temperature">24</div>
+                        <div class="weather-description" id="weather-description">Sunny</div>
+                    </div>
+                </div>
+                
+                <div class="weather-details">
+                    <div class="detail-card">
+                        <i class="fas fa-wind"></i>
+                        <div class="value" id="wind-speed">5.4 km/h</div>
+                        <div class="label" id="wind-label">Wind Speed</div>
+                        <div class="wind-direction" id="wind-direction">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <i class="fas fa-tint"></i>
+                        <div class="value" id="humidity">65%</div>
+                        <div class="label" id="humidity-label">Humidity</div>
+                    </div>
+                    <div class="detail-card">
+                        <i class="fas fa-compress"></i>
+                        <div class="value" id="pressure">1013 hPa</div>
+                        <div class="label" id="pressure-label">Pressure</div>
+                    </div>
+                    <div class="detail-card">
+                        <i class="fas fa-eye"></i>
+                        <div class="value" id="visibility">10 km</div>
+                        <div class="label" id="visibility-label">Visibility</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <h3 id="map-title">Location Map</h3>
+                <div id="map"></div>
+            </div>
+        </div>
+        
+        <div class="forecast-section">
+            <div class="section-header">
+                <h2 id="forecast-title">5-Day Forecast</h2>
+                <div class="control-btn">
+                    <i class="fas fa-calendar-alt"></i> <span id="calendar-text">Select Date</span>
+                </div>
+            </div>
+            
+            <div class="calendar-container" id="calendar-container">
+                <div class="calendar-day active">
+                    <div class="date" id="today-text">Today</div>
+                    <div class="temp">24°C</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="date">Fri, Jul 18</div>
+                    <div class="temp">26°C</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="date">Sat, Jul 19</div>
+                    <div class="temp">23°C</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="date">Sun, Jul 20</div>
+                    <div class="temp">27°C</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="date">Mon, Jul 21</div>
+                    <div class="temp">25°C</div>
+                </div>
+            </div>
+            
+            <div class="forecast-days" id="forecast-days">
+                <div class="forecast-card">
+                    <div class="time">9:00 AM</div>
+                    <div class="weather-icon"><i class="fas fa-sun"></i></div>
+                    <div class="temp">24°C</div>
+                    <div class="description">Sunny</div>
+                </div>
+                <div class="forecast-card">
+                    <div class="time">12:00 PM</div>
+                    <div class="weather-icon"><i class="fas fa-cloud-sun"></i></div>
+                    <div class="temp">26°C</div>
+                    <div class="description">Partly Cloudy</div>
+                </div>
+                <div class="forecast-card">
+                    <div class="time">3:00 PM</div>
+                    <div class="weather-icon"><i class="fas fa-cloud"></i></div>
+                    <div class="temp">25°C</div>
+                    <div class="description">Cloudy</div>
+                </div>
+                <div class="forecast-card">
+                    <div class="time">6:00 PM</div>
+                    <div class="weather-icon"><i class="fas fa-cloud-sun"></i></div>
+                    <div class="temp">23°C</div>
+                    <div class="description">Partly Cloudy</div>
+                </div>
+                <div class="forecast-card">
+                    <div class="time">9:00 PM</div>
+                    <div class="weather-icon"><i class="fas fa-moon"></i></div>
+                    <div class="temp">21°C</div>
+                    <div class="description">Clear</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alerts-section">
+            <div class="section-header">
+                <h2 id="alerts-title">Weather Alerts</h2>
+            </div>
+            
+            <div class="alert-card">
+                <h4><i class="fas fa-exclamation-triangle"></i> <span id="heat-alert">Heat Advisory</span></h4>
+                <p id="heat-message">A heat advisory is in effect until 8 PM. High temperatures expected. Stay hydrated and avoid prolonged sun exposure.</p>
+            </div>
+            
+            <div class="alert-card">
+                <h4><i class="fas fa-wind"></i> <span id="wind-alert">Wind Advisory</span></h4>
+                <p id="wind-message">Wind gusts up to 40 mph expected this afternoon. Secure outdoor objects and use caution when driving.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
